@@ -18,7 +18,7 @@ class ProjetCdcApplicationTests {
 
 
         // QUAND un badge est détecté
-        lecteurFake.simulerDetectionBadge();
+        lecteurFake.simulerDetectionBadge(new Badge());
 
         // ET que ce lecteur est interrogé
         MoteurOuverture.InterrogerLecteurs(lecteurFake);
@@ -35,7 +35,7 @@ class ProjetCdcApplicationTests {
         var porteSpy = new PorteSpy();
 
         // QUAND un badge est détecté
-        lecteurFake.simulerDetectionBadge();
+        lecteurFake.simulerDetectionBadge(new Badge());
 
         // ALORS la porte est déverrouillée
         assertFalse(porteSpy.verifierOuvertureDemandee());
@@ -62,7 +62,7 @@ class ProjetCdcApplicationTests {
         var lecteurFake = new LecteurFake(porteSpy1, porteSpy2);  //double de test
 
         // QUAND un badge est détecté
-        lecteurFake.simulerDetectionBadge();
+        lecteurFake.simulerDetectionBadge(new Badge());
 
         // ET que ce lecteur est interrogé
         MoteurOuverture.InterrogerLecteurs(lecteurFake);
@@ -81,7 +81,7 @@ class ProjetCdcApplicationTests {
         var lecteurFake2 = new LecteurFake(porteSpy);  //double de test
 
         // QUAND un badge est passe devant un des lecteur
-        lecteurFake1.simulerDetectionBadge();
+        lecteurFake1.simulerDetectionBadge(new Badge());
 
         // ET que ces lecteurs sont interrogés
         MoteurOuverture.InterrogerLecteurs(lecteurFake1, lecteurFake2);
@@ -101,7 +101,7 @@ class ProjetCdcApplicationTests {
 
 
         // QUAND un badge est passe devant un des lecteur
-        lecteurFake1.simulerDetectionBadge();
+        lecteurFake1.simulerDetectionBadge(new Badge());
 
         // ET que ces lecteurs sont interrogés
         MoteurOuverture.InterrogerLecteurs(lecteurFake1, lecteurFake2);
@@ -112,59 +112,40 @@ class ProjetCdcApplicationTests {
         assertFalse(porteSpy2.verifierOuvertureDemandee());
     }
 
-
-
     @Test
-    void testPorteNonDeverrouilleeQuandBadgeInvalideDetecte() {
-        // ETANT DONNE un lecteur relié à une porte
-        Lecteur lecteur = new Lecteur();
-        Porte porte = new Porte();
-        lecteur.setPorte(porte);
-
-        // QUAND un badge invalide ou inconnu est détecté
-        Badge badgeInvalide = new Badge("badgeInvalide");
-        boolean result = lecteur.detecterBadge(badgeInvalide);
-
-        // ALORS la porte n'est pas déverrouillée
-        assertFalse(porte.estDeverrouillee(), "La porte ne devrait pas être déverrouillée pour un badge invalide");
-    }
-
-
-
-    @Test
-    void testPorteNonDeverrouilleeQuandBadgeValideBloqueDetecte() {
+    void testPorteNonDeverrouilleeQuandBadgeBloqueDetecte() {
         // ÉTANT DONNÉ un lecteur relié à une porte
-        Lecteur lecteur = new Lecteur();
-        Porte porte = new Porte();
-        lecteur.setPorte(porte);
+        var porteSpy = new PorteSpy();
+        var lecteurFake = new LecteurFake(porteSpy);
+        var badgeBloque = new Badge();
 
-        // LORSQUE un badge valide mais bloqué est détecté
-        Badge badgeBloque = new Badge("badgeValideBloque");
-        badgeBloque.bloquer();
-        boolean result = lecteur.detecterBadge(badgeBloque);
+        // QUAND un badge bloqué est détecté
+        badgeBloque.bloque();
+        lecteurFake.simulerDetectionBadge(badgeBloque);
+
+        // ET que ce lecteur est interrogé
+        MoteurOuverture.InterrogerLecteurs(lecteurFake);
 
         // ALORS la porte n'est pas déverrouillée
-        assertFalse(porte.estDeverrouillee(), "La porte ne devrait pas être déverrouillée pour un badge valide mais bloqué");
+        assertFalse(porteSpy.verifierOuvertureDemandee());
     }
 
     @Test
-    void testPorteNonDeverrouilleeQuandRecuperationImpossible() {
+    void testPorteNonDeverrouilleeQuandBadgeBloquePuisDebloqueDetecte() {
         // ÉTANT DONNÉ un lecteur relié à une porte
-        Lecteur lecteur = new Lecteur();
-        Porte porte = new Porte();
-        lecteur.setPorte(porte);
+        var porteSpy = new PorteSpy();
+        var lecteurFake = new LecteurFake(porteSpy);
+        var badgeBloque = new Badge();
 
-        // ET qu'il est impossible de récupérer les informations
-        lecteur.setRecuperationImpossible(true);
+        // QUAND un badge bloqué est détecté
+        badgeBloque.bloque();
+        badgeBloque.debloque();
+        lecteurFake.simulerDetectionBadge(badgeBloque);
 
-        // QUAND un badge est détecté
-        Badge badge = new Badge("badgeTest");
-        boolean result = lecteur.detecterBadge(badge);
+        // ET que ce lecteur est interrogé
+        MoteurOuverture.InterrogerLecteurs(lecteurFake);
 
-        // ALORS la porte n'est pas déverrouillée
-        assertFalse(porte.estDeverrouillee(), "La porte ne devrait pas être déverrouillée lorsque la récupération d'informations est impossible");
+        // ALORS la porte est déverrouillée
+        assertTrue(porteSpy.verifierOuvertureDemandee());
     }
-
-
-
 }

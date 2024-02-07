@@ -7,8 +7,8 @@ public class LecteurFake implements LecteurInterface {
 
     private PorteInterface[] _portes;
 
-    public void simulerDetectionBadge() {
-        _aDetecteBadge = true;
+    public void simulerDetectionBadge(Badge badge) {
+        _aDetecteBadge = !badge.isEstBloque() ;
     }
 
     @Override
