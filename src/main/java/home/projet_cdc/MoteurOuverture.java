@@ -6,7 +6,9 @@ public class MoteurOuverture {
         for (var lecteur : lecteurs){
             if(lecteur.aDetecteBadge()){
                 for(var porte : lecteur.getPortes())
-                porte.ouvrir();
+                    if(!porte.isEstBloque()){
+                        porte.ouvrir();
+                    }
             }
         }
     }

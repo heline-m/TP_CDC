@@ -113,7 +113,7 @@ class ProjetCdcApplicationTests {
     }
 
     @Test
-    void testPorteNonDeverrouilleeQuandBadgeBloqueDetecte() {
+    void casPorteNonDeverrouilleeQuandBadgeBloqueDetecte() {
         // ÉTANT DONNÉ un lecteur relié à une porte
         var porteSpy = new PorteSpy();
         var lecteurFake = new LecteurFake(porteSpy);
@@ -131,13 +131,13 @@ class ProjetCdcApplicationTests {
     }
 
     @Test
-    void testPorteNonDeverrouilleeQuandBadgeBloquePuisDebloqueDetecte() {
+    void casPorteDeverrouilleeQuandBadgeBloquePuisDebloqueDetecte() {
         // ÉTANT DONNÉ un lecteur relié à une porte
         var porteSpy = new PorteSpy();
         var lecteurFake = new LecteurFake(porteSpy);
         var badgeBloque = new Badge();
 
-        // QUAND un badge bloqué est détecté
+        // QUAND un badge bloqué puis debloqué est détecté
         badgeBloque.bloque();
         badgeBloque.debloque();
         lecteurFake.simulerDetectionBadge(badgeBloque);
@@ -147,5 +147,42 @@ class ProjetCdcApplicationTests {
 
         // ALORS la porte est déverrouillée
         assertTrue(porteSpy.verifierOuvertureDemandee());
+    }
+
+    @Test
+    void casPorteNonDeverouilleeQuandPorteBloqueeEtBadgeDetecte(){
+        // ÉTANT DONNÉ un lecteur relié à une porte bloquee
+        var porteSpyBloquee = new PorteSpy();
+        porteSpyBloquee.bloquer();
+        var lecteurFake = new LecteurFake(porteSpyBloquee);
+        var badge = new Badge();
+
+        // QUAND un badge est détecté
+        lecteurFake.simulerDetectionBadge(badge);
+
+        // ET que ce lecteur est interrogé
+        MoteurOuverture.InterrogerLecteurs(lecteurFake);
+
+        // ALORS la porte n'est pas déverrouillée
+        assertFalse(porteSpyBloquee.verifierOuvertureDemandee());
+    }
+
+    @Test
+    void casPorteNonDeverouilleeQuandPorteBloqueePuisDebloqueeEtBadgeDetecte(){
+        // ÉTANT DONNÉ un lecteur relié à une porte bloquee
+        var porteSpyBloquee = new PorteSpy();
+        porteSpyBloquee.bloquer();
+        porteSpyBloquee.debloquer();
+        var lecteurFake = new LecteurFake(porteSpyBloquee);
+        var badge = new Badge();
+
+        // QUAND un badge est détecté
+        lecteurFake.simulerDetectionBadge(badge);
+
+        // ET que ce lecteur est interrogé
+        MoteurOuverture.InterrogerLecteurs(lecteurFake);
+
+        // ALORS la porte est déverrouillée
+        assertTrue(porteSpyBloquee.verifierOuvertureDemandee());
     }
 }

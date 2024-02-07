@@ -6,6 +6,22 @@ public class PorteSpy implements PorteInterface{
 
     private boolean _ouvertureDemandee = false;
 
+    private boolean estBloque = false;
+
+    public boolean isEstBloque() {
+        return estBloque;
+    }
+
+    @Override
+    public void bloquer() {
+        this.estBloque = true;
+    }
+
+    @Override
+    public void debloquer() {
+        this.estBloque = false;
+    }
+
     public boolean verifierOuvertureDemandee() {
         return _ouvertureDemandee;
     }
