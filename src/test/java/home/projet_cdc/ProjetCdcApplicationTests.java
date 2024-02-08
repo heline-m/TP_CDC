@@ -59,7 +59,7 @@ class ProjetCdcApplicationTests {
         // ETANT DONNE un lecteur relié à une porte
         var porteSpy1 = new PorteSpy();
         var porteSpy2 = new PorteSpy();
-        var lecteurFake = new LecteurFake(porteSpy1, porteSpy2);  //double de test
+        var lecteurFake = new LecteurFake(porteSpy1, porteSpy2);
 
         // QUAND un badge est détecté
         lecteurFake.simulerDetectionBadge(new Badge());
@@ -151,10 +151,10 @@ class ProjetCdcApplicationTests {
 
     @Test
     void casPorteNonDeverouilleeQuandPorteBloqueeEtBadgeDetecte(){
-        // ÉTANT DONNÉ un lecteur relié à une porte bloquee
-        var porteSpyBloquee = new PorteSpy();
-        porteSpyBloquee.bloquer();
-        var lecteurFake = new LecteurFake(porteSpyBloquee);
+        // ÉTANT DONNÉ un lecteur relié à une porte bloquee et non bloquee
+        var porteBloquee = new PorteBuilder().Bloquee().Build();
+        var porteNonBloquee = new PorteBuilder().parDefaut();
+        var lecteurFake = new LecteurFake(porteBloquee, porteNonBloquee);
         var badge = new Badge();
 
         // QUAND un badge est détecté
@@ -163,17 +163,18 @@ class ProjetCdcApplicationTests {
         // ET que ce lecteur est interrogé
         MoteurOuverture.InterrogerLecteurs(lecteurFake);
 
-        // ALORS la porte n'est pas déverrouillée
-        assertFalse(porteSpyBloquee.verifierOuvertureDemandee());
+        // ALORS la porte bloquée n'est pas déverrouillée
+        assertFalse(porteBloquee.verifierOuvertureDemandee());
+        // ET la porte non bloquée est déverrouillée
+        assertTrue(porteNonBloquee.verifierOuvertureDemandee());
     }
 
     @Test
     void casPorteNonDeverouilleeQuandPorteBloqueePuisDebloqueeEtBadgeDetecte(){
-        // ÉTANT DONNÉ un lecteur relié à une porte bloquee
-        var porteSpyBloquee = new PorteSpy();
-        porteSpyBloquee.bloquer();
-        porteSpyBloquee.debloquer();
-        var lecteurFake = new LecteurFake(porteSpyBloquee);
+        // ÉTANT DONNÉ un lecteur relié à une porte bloquee puis debloquee
+        var porteBloqueePuisDebloque = new PorteBuilder().Bloquee().Build();
+        porteBloqueePuisDebloque.debloquer();
+        var lecteurFake = new LecteurFake(porteBloqueePuisDebloque);
         var badge = new Badge();
 
         // QUAND un badge est détecté
@@ -182,7 +183,7 @@ class ProjetCdcApplicationTests {
         // ET que ce lecteur est interrogé
         MoteurOuverture.InterrogerLecteurs(lecteurFake);
 
-        // ALORS la porte est déverrouillée
-        assertTrue(porteSpyBloquee.verifierOuvertureDemandee());
+        // ALORS la porte bloquée puis débloquée est déverrouillée
+        assertTrue(porteBloqueePuisDebloque.verifierOuvertureDemandee());
     }
 }

@@ -1,25 +1,27 @@
 package home.projet_cdc;
 
 public class PorteSpy implements PorteInterface{
+    private final PorteInterface decorateur;
+    public PorteSpy(PorteInterface decorated){
+        this.decorateur = decorated;
+    }
+
     public PorteSpy(){
+        this.decorateur = new PorteFake(false);
     }
 
     private boolean _ouvertureDemandee = false;
 
-    private boolean estBloque = false;
-
     public boolean isEstBloque() {
-        return estBloque;
+        return decorateur.isEstBloque();
     }
 
     @Override
-    public void bloquer() {
-        this.estBloque = true;
-    }
+    public void bloquer() { }
 
     @Override
     public void debloquer() {
-        this.estBloque = false;
+        decorateur.debloquer();
     }
 
     public boolean verifierOuvertureDemandee() {
