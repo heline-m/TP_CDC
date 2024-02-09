@@ -3,6 +3,9 @@ package home.projet_cdc;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 
@@ -185,5 +188,29 @@ class ProjetCdcApplicationTests {
 
         // ALORS la porte bloquée puis débloquée est déverrouillée
         assertTrue(porteBloqueePuisDebloque.verifierOuvertureDemandee());
+    }
+
+    @Test
+    void casPorteDeverouilleEtantDonneBadgeEtantDansLaListeDautorisationDeLaPorte(){
+        // ÉTANT DONNÉ une porte liée à un lecteur
+        List<Badge> badges = new ArrayList<>();
+        var badge = new Badge();
+        badges.add(badge);
+        var porte = new PorteBuilder();
+        var lecteurFake = new LecteurFake(porte);
+
+        //ET un badge étant dans la liste d’autorisation de la porte
+
+        porte.setListeBadges(badges);
+
+        // QUAND le badge est détecté
+        lecteurFake.simulerDetectionBadge(new Badge());
+
+        // ET que ce lecteur est interrogé
+        MoteurOuverture.InterrogerLecteurs(lecteurFake);
+
+
+        // ALORS la porte est déverrouillée
+        assertTrue(porte.verifierOuvertureDemandee());
     }
 }
