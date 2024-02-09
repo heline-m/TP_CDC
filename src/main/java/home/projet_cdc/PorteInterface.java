@@ -8,7 +8,7 @@ public interface PorteInterface {
 
     void bloquer();
 
-    void debloquer();
+    void debluer();
 
     boolean isEstBloque();
 }
