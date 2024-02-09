@@ -18,13 +18,20 @@ class ProjetCdcApplicationTests {
         // ETANT DONNE un lecteur relié à une porte
         var porte = new PorteBuilder().parDefaut();
         var lecteurFake = new LecteurFake(porte);
+        List<Badge> badges = new ArrayList<>();
+        var badge = new Badge(1);
+        badges.add(badge);
+        var accesPorteFake = new AccesPorteFake();
+        accesPorteFake.addAcces(porte, badges);
+
+
 
 
         // QUAND un badge est détecté
-        lecteurFake.simulerDetectionBadge(new Badge());
+        lecteurFake.simulerDetectionBadge(badge);
 
         // ET que ce lecteur est interrogé
-        MoteurOuverture.InterrogerLecteurs(lecteurFake);
+        MoteurOuverture.InterrogerLecteurs(accesPorteFake, lecteurFake);
 
 
         // ALORS la porte est déverrouillée
@@ -49,9 +56,11 @@ class ProjetCdcApplicationTests {
         //ETANT DONNE un lecteur relié à une porte
         var porte = new PorteBuilder().parDefaut();
         var lecteurFake = new LecteurFake(porte);
+        var accesPorteFake = new AccesPorteFake();
+        accesPorteFake.addAcces(porte, new ArrayList<>());
 
         //QUAND on interroge ce lecteur sans qu'il ait détecté un badge
-        MoteurOuverture.InterrogerLecteurs(lecteurFake);
+        MoteurOuverture.InterrogerLecteurs(accesPorteFake, lecteurFake);
 
         assertFalse(porte.verifierOuvertureDemandee());
 
@@ -63,12 +72,18 @@ class ProjetCdcApplicationTests {
         var porte1 = new PorteBuilder().parDefaut();
         var porte2 = new PorteBuilder().parDefaut();
         var lecteurFake = new LecteurFake(porte1, porte2);
+        List<Badge> badges = new ArrayList<>();
+        var badge = new Badge(1);
+        badges.add(badge);
+        var accesPorteFake = new AccesPorteFake();
+        accesPorteFake.addAcces(porte1, badges);
+        accesPorteFake.addAcces(porte2, badges);
 
         // QUAND un badge est détecté
         lecteurFake.simulerDetectionBadge(new Badge());
 
         // ET que ce lecteur est interrogé
-        MoteurOuverture.InterrogerLecteurs(lecteurFake);
+        MoteurOuverture.InterrogerLecteurs(accesPorteFake, lecteurFake);
 
 
         // ALORS la porte est déverrouillée
@@ -82,12 +97,17 @@ class ProjetCdcApplicationTests {
         var porte = new PorteBuilder().parDefaut();
         var lecteurFake1 = new LecteurFake(porte);  //double de test
         var lecteurFake2 = new LecteurFake(porte);  //double de test
+        List<Badge> badges = new ArrayList<>();
+        var badge = new Badge(1);
+        badges.add(badge);
+        var accesPorteFake = new AccesPorteFake();
+        accesPorteFake.addAcces(porte, badges);
 
         // QUAND un badge est passe devant un des lecteur
-        lecteurFake1.simulerDetectionBadge(new Badge());
+        lecteurFake1.simulerDetectionBadge(badge);
 
         // ET que ces lecteurs sont interrogés
-        MoteurOuverture.InterrogerLecteurs(lecteurFake1, lecteurFake2);
+        MoteurOuverture.InterrogerLecteurs(accesPorteFake, lecteurFake1, lecteurFake2);
 
 
         // ALORS la porte est déverrouillée
@@ -101,13 +121,18 @@ class ProjetCdcApplicationTests {
         var porte2 = new PorteBuilder().parDefaut();
         var lecteurFake1 = new LecteurFake(porte);  //double de test
         var lecteurFake2 = new LecteurFake(porte2);  //double de test
+        List<Badge> badges = new ArrayList<>();
+        var badge = new Badge(1);
+        badges.add(badge);
+        var accesPorteFake = new AccesPorteFake();
+        accesPorteFake.addAcces(porte, badges);
 
 
         // QUAND un badge est passe devant un des lecteur
-        lecteurFake1.simulerDetectionBadge(new Badge());
+        lecteurFake1.simulerDetectionBadge(badge);
 
         // ET que ces lecteurs sont interrogés
-        MoteurOuverture.InterrogerLecteurs(lecteurFake1, lecteurFake2);
+        MoteurOuverture.InterrogerLecteurs(accesPorteFake, lecteurFake1, lecteurFake2);
 
 
         // ALORS la porte est déverrouillée
@@ -120,14 +145,17 @@ class ProjetCdcApplicationTests {
         // ÉTANT DONNÉ un lecteur relié à une porte
         var porte = new PorteBuilder().parDefaut();
         var lecteurFake = new LecteurFake(porte);
-        var badgeBloque = new Badge();
+        var badgeBloque = new Badge(1);
+        List<Badge> badges = new ArrayList<>();
+        var accesPorteFake = new AccesPorteFake();
+        accesPorteFake.addAcces(porte, badges);
 
         // QUAND un badge bloqué est détecté
         badgeBloque.bloque();
         lecteurFake.simulerDetectionBadge(badgeBloque);
 
         // ET que ce lecteur est interrogé
-        MoteurOuverture.InterrogerLecteurs(lecteurFake);
+        MoteurOuverture.InterrogerLecteurs(accesPorteFake, lecteurFake);
 
         // ALORS la porte n'est pas déverrouillée
         assertFalse(porte.verifierOuvertureDemandee());
@@ -138,15 +166,20 @@ class ProjetCdcApplicationTests {
         // ÉTANT DONNÉ un lecteur relié à une porte
         var porte = new PorteBuilder().parDefaut();
         var lecteurFake = new LecteurFake(porte);
-        var badgeBloque = new Badge();
-
-        // QUAND un badge bloqué puis debloqué est détecté
+        var badgeBloque = new Badge(1);
         badgeBloque.bloque();
         badgeBloque.debloque();
+        List<Badge> badges = new ArrayList<>();
+        badges.add(badgeBloque);
+        var accesPorteFake = new AccesPorteFake();
+        accesPorteFake.addAcces(porte, badges);
+
+        // QUAND un badge bloqué puis debloqué est détecté
+
         lecteurFake.simulerDetectionBadge(badgeBloque);
 
         // ET que ce lecteur est interrogé
-        MoteurOuverture.InterrogerLecteurs(lecteurFake);
+        MoteurOuverture.InterrogerLecteurs(accesPorteFake, lecteurFake);
 
         // ALORS la porte est déverrouillée
         assertTrue(porte.verifierOuvertureDemandee());
@@ -158,13 +191,18 @@ class ProjetCdcApplicationTests {
         var porteBloquee = new PorteBuilder().Bloquee().Build();
         var porteNonBloquee = new PorteBuilder().parDefaut();
         var lecteurFake = new LecteurFake(porteBloquee, porteNonBloquee);
-        var badge = new Badge();
+        List<Badge> badges = new ArrayList<>();
+        var badge = new Badge(1);
+        badges.add(badge);
+        var accesPorteFake = new AccesPorteFake();
+        accesPorteFake.addAcces(porteBloquee, badges);
+        accesPorteFake.addAcces(porteNonBloquee, badges);
 
         // QUAND un badge est détecté
         lecteurFake.simulerDetectionBadge(badge);
 
         // ET que ce lecteur est interrogé
-        MoteurOuverture.InterrogerLecteurs(lecteurFake);
+        MoteurOuverture.InterrogerLecteurs(accesPorteFake, lecteurFake);
 
         // ALORS la porte bloquée n'est pas déverrouillée
         assertFalse(porteBloquee.verifierOuvertureDemandee());
@@ -178,13 +216,16 @@ class ProjetCdcApplicationTests {
         var porteBloqueePuisDebloque = new PorteBuilder().Bloquee().Build();
         porteBloqueePuisDebloque.debloquer();
         var lecteurFake = new LecteurFake(porteBloqueePuisDebloque);
-        var badge = new Badge();
+        var badge = new Badge(1);
+        List<Badge> badges = new ArrayList<>();
+        var accesPorteFake = new AccesPorteFake();
+        accesPorteFake.addAcces(porteBloqueePuisDebloque, badges);
 
         // QUAND un badge est détecté
         lecteurFake.simulerDetectionBadge(badge);
 
         // ET que ce lecteur est interrogé
-        MoteurOuverture.InterrogerLecteurs(lecteurFake);
+        MoteurOuverture.InterrogerLecteurs(accesPorteFake, lecteurFake);
 
         // ALORS la porte bloquée puis débloquée est déverrouillée
         assertTrue(porteBloqueePuisDebloque.verifierOuvertureDemandee());
@@ -196,18 +237,16 @@ class ProjetCdcApplicationTests {
         List<Badge> badges = new ArrayList<>();
         var badge = new Badge();
         badges.add(badge);
-        var porte = new PorteBuilder();
+        var porte = new PorteBuilder().parDefaut();
+        var accesPorteFake = new AccesPorteFake();
+        accesPorteFake.addAcces(porte, badges);
         var lecteurFake = new LecteurFake(porte);
-
-        //ET un badge étant dans la liste d’autorisation de la porte
-
-        porte.setListeBadges(badges);
 
         // QUAND le badge est détecté
         lecteurFake.simulerDetectionBadge(new Badge());
 
         // ET que ce lecteur est interrogé
-        MoteurOuverture.InterrogerLecteurs(lecteurFake);
+        MoteurOuverture.InterrogerLecteurs(accesPorteFake, lecteurFake);
 
 
         // ALORS la porte est déverrouillée
