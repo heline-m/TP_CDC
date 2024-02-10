@@ -11,7 +11,9 @@ public class MoteurOuverture {
                 for(var porte : lecteur.getPortes())
                     if(!porte.isEstBloque()){
                         for(var badge : acces.getAcces(porte)) {
-                            porte.ouvrir();
+                            if(lecteur.aDetecteBadgeId() == badge.getId()) {
+                                porte.ouvrir();
+                            }
                         }
                     }
             }
