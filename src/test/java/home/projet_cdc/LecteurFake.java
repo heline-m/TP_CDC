@@ -9,7 +9,7 @@ public class LecteurFake implements LecteurInterface {
 
     public void simulerDetectionBadge(Badge badge) {
         _aDetecteBadge = !badge.isEstBloque() ;
-        _aDetecteBadgeId = -1;
+        _aDetecteBadgeId = 1;
     }
 
     @Override

@@ -18,7 +18,7 @@ public class Badge {
     }
 
     public void bloque() {
-        //this.estBloque = true;
+        this.estBloque = true;
     }
 
     public void debloque() {
