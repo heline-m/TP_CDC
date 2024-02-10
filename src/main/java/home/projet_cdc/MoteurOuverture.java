@@ -1,13 +1,20 @@
 package home.projet_cdc;
 
+import java.util.List;
+import java.util.Map;
+
 public class MoteurOuverture {
 
-    public static void InterrogerLecteurs(LecteurInterface... lecteurs) {
+    public static void InterrogerLecteurs(AccesPorteInterface acces, LecteurInterface... lecteurs) {
         for (var lecteur : lecteurs){
             if(lecteur.aDetecteBadge()){
                 for(var porte : lecteur.getPortes())
                     if(!porte.isEstBloque()){
-                        porte.ouvrir();
+                        for(var badge : acces.getAcces(porte)) {
+                            if(lecteur.aDetecteBadgeId() == badge.getId()) {
+                                porte.ouvrir();
+                            }
+                        }
                     }
             }
         }
